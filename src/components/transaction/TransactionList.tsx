@@ -15,7 +15,9 @@ export function TransactionList({ batchId }: TransactionListProps) {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const batch = state.batches.find(b => b.id === batchId);
-  const transactions = batch?.transactions || [];
+  const transactions = (batch?.transactions || []).sort((a, b) => 
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
   const handleDeleteTransaction = (transactionId: string) => {
     dispatch({
