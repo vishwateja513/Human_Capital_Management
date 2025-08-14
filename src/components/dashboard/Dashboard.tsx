@@ -1,4 +1,3 @@
-import React from 'react';
 import React, { useState } from 'react';
 import { Plus, TrendingUp, TrendingDown, FileText, DollarSign } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
