@@ -8,7 +8,7 @@ import { exportToExcel, exportToPDF } from '../../utils/exportUtils';
 import { format } from 'date-fns';
 
 export function BatchDetails() {
-  const { state, dispatch } = useApp();
+  const { state, dispatch, deleteBatch } = useApp();
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [showBatchForm, setShowBatchForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -20,7 +20,7 @@ export function BatchDetails() {
   }
 
   const handleDeleteBatch = () => {
-    dispatch({ type: 'DELETE_BATCH', payload: batch.id });
+    deleteBatch(batch.id);
     dispatch({ type: 'SET_CURRENT_BATCH', payload: null });
     setShowDeleteConfirm(false);
   };

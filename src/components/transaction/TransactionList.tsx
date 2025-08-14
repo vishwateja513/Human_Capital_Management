@@ -10,7 +10,7 @@ interface TransactionListProps {
 }
 
 export function TransactionList({ batchId }: TransactionListProps) {
-  const { state, dispatch } = useApp();
+  const { state, deleteTransaction } = useApp();
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
@@ -20,10 +20,7 @@ export function TransactionList({ batchId }: TransactionListProps) {
   );
 
   const handleDeleteTransaction = (transactionId: string) => {
-    dispatch({
-      type: 'DELETE_TRANSACTION',
-      payload: { batchId, transactionId },
-    });
+    deleteTransaction(batchId, transactionId);
     setDeleteConfirmId(null);
   };
 

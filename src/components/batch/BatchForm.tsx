@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, Calendar, DollarSign, FileText } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
 import { Batch } from '../../types';
 
@@ -18,7 +17,7 @@ export function BatchForm({ batch, onClose }: BatchFormProps) {
     endDate: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { dispatch } = useApp();
+  const { createBatch, updateBatch } = useApp();
 
   useEffect(() => {
     if (batch) {
@@ -71,34 +70,24 @@ export function BatchForm({ batch, onClose }: BatchFormProps) {
     if (!validateForm()) return;
 
     const openingBalance = parseFloat(formData.openingBalance);
-    const now = new Date().toISOString();
 
     if (batch) {
-      const updatedBatch: Batch = {
+      updateBatch({
         ...batch,
         name: formData.name.trim(),
         openingBalance,
         startDate: formData.startDate,
         endDate: formData.endDate,
         closingBalance: openingBalance - batch.totalExpense,
-        updatedAt: now,
-      };
-      dispatch({ type: 'UPDATE_BATCH', payload: updatedBatch });
+        updatedAt: new Date().toISOString(),
+      });
     } else {
-      const newBatch: Batch = {
-        id: uuidv4(),
+      createBatch({
         name: formData.name.trim(),
         openingBalance,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        transactions: [],
-        totalExpense: 0,
-        closingBalance: openingBalance,
-        createdAt: now,
-        updatedAt: now,
-      };
-      dispatch({ type: 'ADD_BATCH', payload: newBatch });
-      dispatch({ type: 'SET_CURRENT_BATCH', payload: newBatch });
+      });
     }
 
     onClose();

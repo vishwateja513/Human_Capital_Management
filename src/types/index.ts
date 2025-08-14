@@ -1,7 +1,6 @@
 export interface User {
   id: string;
   email: string;
-  name: string;
 }
 
 export interface Transaction {
@@ -15,6 +14,7 @@ export interface Transaction {
 
 export interface Batch {
   id: string;
+  user_id: string;
   name: string;
   openingBalance: number;
   startDate: string;

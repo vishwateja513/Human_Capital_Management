@@ -1,14 +1,17 @@
 import React from 'react';
+import React, { useState } from 'react';
 import { Plus, TrendingUp, TrendingDown, FileText, DollarSign } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { BatchForm } from '../batch/BatchForm';
 import { format } from 'date-fns';
 
 interface DashboardProps {
-  onCreateBatch: () => void;
+  onCreateBatch?: () => void;
 }
 
 export function Dashboard({ onCreateBatch }: DashboardProps) {
   const { state, dispatch } = useApp();
+  const [showBatchForm, setShowBatchForm] = useState(false);
 
   const totalBatches = state.batches.length;
   const totalTransactions = state.batches.reduce((sum, batch) => sum + batch.transactions.length, 0);
@@ -33,7 +36,7 @@ export function Dashboard({ onCreateBatch }: DashboardProps) {
             <p className="text-gray-600">Manage your expense batches and track spending</p>
           </div>
           <button
-            onClick={onCreateBatch}
+            onClick={() => setShowBatchForm(true)}
             className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 font-medium shadow-sm hover:shadow-md"
           >
             <Plus className="w-5 h-5" />
@@ -96,7 +99,7 @@ export function Dashboard({ onCreateBatch }: DashboardProps) {
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No batches yet</h3>
                 <p className="text-gray-600 mb-6">Create your first batch to start tracking expenses</p>
                 <button
-                  onClick={onCreateBatch}
+                  onClick={() => setShowBatchForm(true)}
                   className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 font-medium"
                 >
                   Create Your First Batch
@@ -141,6 +144,11 @@ export function Dashboard({ onCreateBatch }: DashboardProps) {
             )}
           </div>
         </div>
+
+        {/* Batch Form Modal */}
+        {showBatchForm && (
+          <BatchForm onClose={() => setShowBatchForm(false)} />
+        )}
       </div>
     </div>
   );

@@ -1,16 +1,19 @@
 import React from 'react';
+import React, { useState } from 'react';
 import { Plus, FileText, Search, LogOut, Calendar, DollarSign } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { supabase } from '../../lib/supabase';
+import { BatchForm } from '../batch/BatchForm';
 import { format } from 'date-fns';
 
 interface SidebarProps {
-  onCreateBatch: () => void;
   searchTerm: string;
   onSearchChange: (term: string) => void;
 }
 
-export function Sidebar({ onCreateBatch, searchTerm, onSearchChange }: SidebarProps) {
+export function Sidebar({ searchTerm, onSearchChange }: SidebarProps) {
   const { state, dispatch } = useApp();
+  const [showBatchForm, setShowBatchForm] = useState(false);
 
   const handleLogout = () => {
     dispatch({ type: 'SET_USER', payload: null });
@@ -31,7 +34,7 @@ export function Sidebar({ onCreateBatch, searchTerm, onSearchChange }: SidebarPr
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <h1 className="text-xl font-bold text-gray-900 mb-1">Expense Manager</h1>
-        <p className="text-sm text-gray-600">Welcome, {state.user?.name}</p>
+        <p className="text-sm text-gray-600">Welcome, {state.user?.email.split('@')[0]}</p>
       </div>
 
       {/* Search */}
@@ -51,7 +54,7 @@ export function Sidebar({ onCreateBatch, searchTerm, onSearchChange }: SidebarPr
       {/* Create New Batch */}
       <div className="px-4 pb-4">
         <button
-          onClick={onCreateBatch}
+          onClick={() => setShowBatchForm(true)}
           className="w-full flex items-center gap-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 font-medium"
         >
           <Plus className="w-5 h-5" />
@@ -102,13 +105,18 @@ export function Sidebar({ onCreateBatch, searchTerm, onSearchChange }: SidebarPr
       {/* Logout */}
       <div className="p-4 border-t border-gray-200">
         <button
-          onClick={handleLogout}
+          onClick={() => supabase.auth.signOut()}
           className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
         >
           <LogOut className="w-5 h-5" />
           Logout
         </button>
       </div>
+
+      {/* Batch Form Modal */}
+      {showBatchForm && (
+        <BatchForm onClose={() => setShowBatchForm(false)} />
+      )}
     </div>
   );
 }
